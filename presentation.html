@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>From ad hoc to accountable | Data maturity roadmap</title>
+  <style>
+    :root {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: #f3f7fb;
+      background: #0b1523;
+      line-height: 1.45;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button { font: inherit; }
+    a { color: #83dfda; }
+    :focus-visible { outline: 3px solid #ffcb78; outline-offset: 4px; }
+    .skip { position: absolute; top: -5rem; left: 1rem; z-index: 10; background: #fff; color: #102338; padding: .6rem; }
+    .skip:focus { top: 1rem; }
+    .masthead, .controls {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: .85rem clamp(1rem, 3vw, 3rem);
+      background: #0b1523;
+    }
+    .masthead { border-bottom: 1px solid #314658; }
+    .brand { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #83dfda; }
+    .masthead span:last-child { color: #c1d1df; font-size: .88rem; }
+    main { max-width: 1600px; margin: auto; }
+    .slide {
+      min-height: min(790px, calc(100vh - 136px));
+      padding: clamp(1.5rem, 5vw, 5rem);
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid #314658;
+      background: radial-gradient(ellipse at 95% 0%, #173b4a 0%, transparent 45%), #102338;
+    }
+    .slide:nth-child(3n + 2) { background: radial-gradient(ellipse at 0% 100%, #253457 0%, transparent 45%), #102338; }
+    .slide[hidden] { display: none; }
+    .eyebrow { color: #83dfda; letter-spacing: .13em; text-transform: uppercase; font-size: .78rem; font-weight: 700; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(2.6rem, 6.5vw, 6rem); line-height: 1.02; letter-spacing: -.045em; max-width: 13ch; margin-bottom: 1.5rem; }
+    h2 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; letter-spacing: -.035em; margin-bottom: 1rem; }
+    h3 { font-size: 1.12rem; margin-bottom: .45rem; }
+    .lead { font-size: clamp(1.1rem, 2vw, 1.55rem); max-width: 64ch; color: #d0dfeb; }
+    .muted, .note { color: #c1d1df; }
+    .note { font-size: .9rem; margin: 1rem 0 0; max-width: 95ch; }
+    .accent { color: #83dfda; }
+    .big-number { font-size: clamp(4rem, 10vw, 9rem); line-height: 1; letter-spacing: -.065em; font-weight: 800; color: #83dfda; }
+    .hero-grid, .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(1rem, 4vw, 4rem); align-items: center; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1.6rem; }
+    .card { padding: 1.2rem; background: #1c3447; border: 1px solid #476075; border-radius: 1rem; }
+    .card p:last-child { margin-bottom: 0; }
+    .card strong { color: #ffcb78; }
+    .scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; margin-top: 2rem; }
+    .scale-item { border-top: .5rem solid #83dfda; padding: 1rem; background: #1c3447; border-radius: .35rem; }
+    .scale-item:first-child { border-color: #ffcb78; }
+    .scale-item b { display: block; font-size: 2rem; }
+    .scale-item span { display: block; color: #d0dfeb; }
+    .table-wrap { overflow-x: auto; border: 1px solid #476075; border-radius: .75rem; margin-top: .75rem; }
+    table { width: 100%; border-collapse: collapse; font-size: clamp(.82rem, 1.25vw, 1rem); }
+    th, td { padding: .6rem .7rem; border-bottom: 1px solid #365268; text-align: left; vertical-align: top; }
+    th { background: #25445a; color: #fff; white-space: nowrap; }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) { background: #1a3246; }
+    .table-wrap .wide { min-width: 720px; }
+    .table-wrap .modules { min-width: 670px; }
+    .tag { display: inline-block; border: 1px solid #ffcb78; color: #ffcb78; border-radius: 2rem; padding: .1rem .6rem; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+    .timeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; margin-top: 1.5rem; }
+    .phase { padding: 1.1rem; background: #1c3447; border-left: .35rem solid #83dfda; border-radius: .3rem .8rem .8rem .3rem; }
+    .phase b { color: #ffcb78; }
+    .phase p { margin: .6rem 0 0; }
+    .phase small { display: block; margin-top: .7rem; color: #c1d1df; }
+    .stat { padding: 1.5rem; border: 1px solid #83dfda; border-radius: 1rem; }
+    .stat strong { font-size: clamp(2.4rem, 5vw, 4.5rem); color: #83dfda; display: block; line-height: 1.1; }
+    ul, ol { padding-left: 1.35rem; }
+    li { margin: .45rem 0; }
+    .controls { position: sticky; bottom: 0; z-index: 2; border-top: 1px solid #476075; }
+    .controls button { background: #25445a; color: #fff; border: 1px solid #83dfda; border-radius: .45rem; padding: .45rem .9rem; cursor: pointer; }
+    .controls button:hover { background: #335b6d; }
+    .controls button:disabled { opacity: .45; cursor: not-allowed; }
+    .controls p { margin: 0; text-align: center; font-size: .9rem; color: #d0dfeb; }
+    @media (max-width: 850px) {
+      .hero-grid, .two-col { grid-template-columns: 1fr; }
+      .cards, .timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .scale { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .slide { min-height: calc(100vh - 132px); }
+    }
+    @media (max-width: 540px) {
+      .cards, .timeline { grid-template-columns: 1fr; }
+      .masthead span:last-child { display: none; }
+      .controls p { font-size: .75rem; }
+      .controls button { padding: .4rem .55rem; }
+    }
+    @media print {
+      :root { color: #102338; background: #fff; }
+      .masthead, .controls, .skip { display: none !important; }
+      .slide, .slide[hidden] { display: flex !important; min-height: 0; height: 100vh; page-break-after: always; break-after: page; background: #fff !important; color: #102338; padding: 2rem; }
+      .card, .phase, .scale-item, th, tbody tr:nth-child(even) { background: #eef5f6; color: #102338; }
+      .lead, .muted, .note, .scale-item span, .phase small { color: #30495a; }
+      .accent, .eyebrow, .big-number, .stat strong { color: #00645e; }
+      .card strong, .phase b, .tag { color: #795000; }
+      .table-wrap { overflow: visible; }
+      a { color: #00645e; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      html { scroll-behavior: smooth; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#slides">Skip to slides</a>
+  <header class="masthead"><span class="brand">Data maturity / Decision briefing</span><span>DAMA-DMBOK assessment · Planning horizon 2–4 years</span></header>
+  <main id="slides">
+    <section class="slide" id="slide-1" aria-labelledby="title-1">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Executive &amp; technical briefing · 01</p>
+          <h1 id="title-1" tabindex="-1">From ad hoc to <span class="accent">accountable.</span></h1>
+          <p class="lead">A practical, evidence-led path to governed, measurable data across 13 assessed knowledge areas.</p>
+          <p class="muted">Decision requested: sponsor a discovery baseline and a focused first-domain pilot.</p>
+        </div>
+        <div class="stat"><strong>1.7 / 5</strong><span>Reported overall maturity today</span><hr><strong>4.0–4.5</strong><span>Program ambition within 2–4 years, subject to reassessment</span></div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-2" aria-labelledby="title-2">
+      <p class="eyebrow">Assessment lens · 02</p>
+      <h2 id="title-2" tabindex="-1">Five levels. One baseline.</h2>
+      <p class="lead">The reported 1.7/5 sits between ad hoc and repeatable practice; the goal is managed, measured performance—not a tool deployment milestone.</p>
+      <div class="scale" aria-label="Five maturity levels">
+        <div class="scale-item"><b>1</b><strong>Initial</strong><span>Ad hoc</span></div>
+        <div class="scale-item"><b>2</b><strong>Repeatable</strong><span>Basic</span></div>
+        <div class="scale-item"><b>3</b><strong>Defined</strong><span>Standardized</span></div>
+        <div class="scale-item"><b>4</b><strong>Managed</strong><span>Measured</span></div>
+        <div class="scale-item"><b>5</b><strong>Optimized</strong><span>Innovative</span></div>
+      </div>
+      <p class="note">Scale and aggregate are transcribed from the assessment description supplied with the task. The underlying image is not present in this repository; area-level scores cannot be verified here.</p>
+    </section>
+
+    <section class="slide" id="slide-3" aria-labelledby="title-3">
+      <p class="eyebrow">Assessment inventory · 03</p>
+      <h2 id="title-3" tabindex="-1">Seven immediate priorities</h2>
+      <p class="lead">These seven were described as both high importance and high priority. Reconfirm area scores and targets against the original scorecard before using them as a baseline.</p>
+      <div class="table-wrap"><table class="wide">
+        <thead><tr><th scope="col">Knowledge area</th><th scope="col">Importance / priority</th><th scope="col">Current</th><th scope="col">Area target</th></tr></thead>
+        <tbody>
+          <tr><td>Data Governance &amp; Stewardship</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Architecture</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Modeling &amp; Design</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Security</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Reference &amp; Master Data</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Warehousing, BI &amp; Data Products</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Quality</td><td><span class="tag">High / high</span></td><td>Unverified</td><td>To confirm</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">The earlier chat mentioned numbers beside some areas, but did not establish whether these were current scores or future targets. They are deliberately not relabeled as current maturity.</p>
+    </section>
+
+    <section class="slide" id="slide-4" aria-labelledby="title-4">
+      <p class="eyebrow">Assessment inventory · 04</p>
+      <h2 id="title-4" tabindex="-1">Six connected capabilities</h2>
+      <p class="lead">All 13 areas matter. Sequence the remaining six around dependencies, regulatory obligations, and value—not an assumed priority score.</p>
+      <div class="table-wrap"><table class="wide">
+        <thead><tr><th scope="col">Knowledge area</th><th scope="col">Priority</th><th scope="col">Current</th><th scope="col">Area target</th></tr></thead>
+        <tbody>
+          <tr><td>Data Storage &amp; Operations</td><td>Reconfirm</td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Privacy &amp; Consent</td><td>Reconfirm</td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Data Integration &amp; Interoperability</td><td>Reconfirm</td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Document &amp; Content Management</td><td>Reconfirm</td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>Metadata</td><td>Reconfirm</td><td>Unverified</td><td>To confirm</td></tr>
+          <tr><td>AI/ML Engineering (MLOps)</td><td>Reconfirm</td><td>Unverified</td><td>To confirm</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">The 4.0–4.5 ambition is program-wide, not an evidenced target for every area. Obtain the source image and validate each current and 1–2 / 3–4-year target cell with assessment owners.</p>
+    </section>
+
+    <section class="slide" id="slide-5" aria-labelledby="title-5">
+      <p class="eyebrow">Strategic thesis · 05</p>
+      <h2 id="title-5" tabindex="-1">Fix the operating model first.</h2>
+      <p class="lead">The primary gaps are <strong>ownership, definitions and data quality</strong>—not a shortage of tooling.</p>
+      <div class="cards">
+        <div class="card"><h3>01 / Ownership</h3><p>Name accountable domain owners and operational stewards. Give them decision rights and escalation paths.</p></div>
+        <div class="card"><h3>02 / Definitions</h3><p>Agree critical data elements, glossary terms and lineage before scaling reporting or AI.</p></div>
+        <div class="card"><h3>03 / Quality</h3><p>Set rules, thresholds, issue workflows and evidence of remediation for priority data products.</p></div>
+      </div>
+      <p class="note">Tools can support these controls; they cannot establish accountability or approve business meaning.</p>
+    </section>
+
+    <section class="slide" id="slide-6" aria-labelledby="title-6">
+      <p class="eyebrow">Phased roadmap · 06</p>
+      <h2 id="title-6" tabindex="-1">Four years, four gates.</h2>
+      <div class="timeline">
+        <div class="phase"><b>Year 1 · Foundation</b><p>Charter, council, owners, inventory and a critical-data pilot.</p><small>Indicative checkpoint: 2.5–2.8 / 5</small></div>
+        <div class="phase"><b>Year 2 · Standardization</b><p>Glossary, access policy, reference data and repeatable quality controls.</p><small>Indicative checkpoint: 3.2–3.5 / 5</small></div>
+        <div class="phase"><b>Year 3 · Measurement</b><p>Automate controls, publish scorecards, resolve recurring issues and scale domains.</p><small>Indicative checkpoint: 3.8–4.0 / 5</small></div>
+        <div class="phase"><b>Year 4 · Optimization</b><p>Audit outcomes, improve based on evidence, and extend to advanced analytics/AI as justified.</p><small>Indicative checkpoint: 4.0–4.5 / 5</small></div>
+      </div>
+      <p class="note">Checkpoints are planning aspirations from the prior plan, not guarantees or forecasts. Re-score with the same rubric at least annually. A 2-year path reaches standardized practice; reaching 4+ may take the full 4 years.</p>
+    </section>
+
+    <section class="slide" id="slide-7" aria-labelledby="title-7">
+      <p class="eyebrow">Module delivery · 07</p>
+      <h2 id="title-7" tabindex="-1">Priority areas: indicative effort</h2>
+      <div class="table-wrap"><table class="modules">
+        <thead><tr><th scope="col">Knowledge area</th><th scope="col">Assess</th><th scope="col">Implement</th><th scope="col">Key prerequisite</th></tr></thead>
+        <tbody>
+          <tr><td>Governance &amp; Stewardship</td><td>1–2 mo</td><td>6–9 mo</td><td>Executive sponsor</td></tr>
+          <tr><td>Architecture</td><td>2–3 mo</td><td>8–12 mo</td><td>Inventory and target domains</td></tr>
+          <tr><td>Modeling &amp; Design</td><td>2–3 mo</td><td>9–12 mo</td><td>Agreed definitions</td></tr>
+          <tr><td>Security</td><td>~2 mo</td><td>6–9 mo</td><td>Classification and access owners</td></tr>
+          <tr><td>Reference &amp; Master Data</td><td>2–3 mo</td><td>9–12 mo</td><td>Domain ownership and golden-record rules</td></tr>
+          <tr><td>Warehousing, BI &amp; Data Products</td><td>3–4 mo</td><td>12–16 mo</td><td>Trusted definitions and pipelines</td></tr>
+          <tr><td>Data Quality</td><td>2–3 mo</td><td>8–12 mo</td><td>Critical elements and stewards</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Months are indicative per-module planning ranges adapted from the existing plan; assessment and implementation can overlap across modules. Implementation means an initial controlled rollout, not permanent completion.</p>
+    </section>
+
+    <section class="slide" id="slide-8" aria-labelledby="title-8">
+      <p class="eyebrow">Module delivery · 08</p>
+      <h2 id="title-8" tabindex="-1">Connected areas: indicative effort</h2>
+      <div class="table-wrap"><table class="modules">
+        <thead><tr><th scope="col">Knowledge area</th><th scope="col">Assess</th><th scope="col">Implement</th><th scope="col">Key prerequisite</th></tr></thead>
+        <tbody>
+          <tr><td>Storage &amp; Operations</td><td>1–2 mo</td><td>6–9 mo</td><td>Retention and platform inventory</td></tr>
+          <tr><td>Privacy &amp; Consent</td><td>2–3 mo</td><td>8–12 mo</td><td>Legal review and data flows</td></tr>
+          <tr><td>Integration &amp; Interoperability</td><td>2–3 mo</td><td>9–12 mo</td><td>Architecture and interface contracts</td></tr>
+          <tr><td>Document &amp; Content Management</td><td>1–2 mo</td><td>4–6 mo</td><td>Retention policy</td></tr>
+          <tr><td>Metadata</td><td>1–2 mo</td><td>6–9 mo</td><td>Inventory and glossary owners</td></tr>
+          <tr><td>AI/ML Engineering (MLOps)</td><td>3–4 mo</td><td>12–16 mo</td><td>Reliable data, security and model ownership</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Estimates exclude procurement delays and major platform migrations. Validate scope, parallel team capacity, regulatory requirements and acceptance criteria during discovery; do not sum rows into a program duration.</p>
+    </section>
+
+    <section class="slide" id="slide-9" aria-labelledby="title-9">
+      <p class="eyebrow">Solution options · 09</p>
+      <h2 id="title-9" tabindex="-1">Choose tools to fit controls.</h2>
+      <div class="table-wrap"><table class="wide">
+        <thead><tr><th scope="col">Capability / areas served</th><th scope="col">Microsoft options to evaluate</th><th scope="col">Decision test</th></tr></thead>
+        <tbody>
+          <tr><td>Ownership, documents, stewardship</td><td>Teams, SharePoint, Power Automate</td><td>Can owners maintain approved policies and decisions?</td></tr>
+          <tr><td>Catalog, metadata, lineage, architecture</td><td>Microsoft Purview Data Governance; Azure Data Factory or Fabric lineage where applicable</td><td>Are priority sources supported and scan costs justified?</td></tr>
+          <tr><td>Quality, reference data, modeling</td><td>Fabric data tools, Power Query, Azure SQL / Dataverse as appropriate</td><td>Can teams enforce rules and steward reference data? Select an MDM pattern separately.</td></tr>
+          <tr><td>Security, privacy, storage, content</td><td>Microsoft Purview Information Protection, Compliance Manager, Azure Policy, SharePoint</td><td>Do chosen license entitlements, controls and legal obligations match?</td></tr>
+          <tr><td>Integration, warehousing, BI / products</td><td>Azure Data Factory, Microsoft Fabric, Power BI</td><td>Which workloads already exist; what capacity is needed?</td></tr>
+          <tr><td>AI/ML engineering</td><td>Azure Machine Learning; Fabric where justified</td><td>Are governed datasets and model controls ready?</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Options, not mandatory purchases. Reuse existing platforms first. Legacy Azure Data Catalog and SQL Server Master Data Services are not proposed as new default investments; validate current product lifecycle and licensing with Microsoft or a reseller.</p>
+    </section>
+
+    <section class="slide" id="slide-10" aria-labelledby="title-10">
+      <p class="eyebrow">Budget framing · 10</p>
+      <h2 id="title-10" tabindex="-1">Price the scope, not a bundle.</h2>
+      <p class="lead">Illustrative <strong>USD budgeting exercise only</strong>—not Microsoft list prices, a quote or a 4-year TCO.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Cost bucket</th><th scope="col">Illustrative assumption</th><th scope="col">Example annual cost</th></tr></thead>
+        <tbody>
+          <tr><td>License subscriptions</td><td>50 incremental eligible users × assumed $30/user/month</td><td>$18,000</td></tr>
+          <tr><td>Cloud / capacity consumption</td><td>Assumed $2,000/month metered workloads</td><td>$24,000</td></tr>
+          <tr><td>Implementation services</td><td>Assumed one-time project budget</td><td>$90,000 in Year 1 only</td></tr>
+          <tr><td>Operating people &amp; support</td><td>Assumed incremental $4,000/month</td><td>$48,000</td></tr>
+          <tr><td><strong>Example totals</strong></td><td>Year 1 / later annual run rate, same footprint</td><td><strong>$180,000 / $90,000</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">No product is assigned a $30 license here; it is a hypothetical blended budget input. Totals omit tax, migration, growth and contractual discounts. Microsoft prices, packaging and entitlements change: validate for the customer’s region, agreement, user count, workloads and consumption before approval.</p>
+    </section>
+
+    <section class="slide" id="slide-11" aria-labelledby="title-11">
+      <p class="eyebrow">Operating model · 11</p>
+      <h2 id="title-11" tabindex="-1">Govern the outcomes.</h2>
+      <div class="cards">
+        <div class="card"><h3>Decision rights</h3><p>Executive sponsor funds and resolves conflicts; governance council approves policy; domain owners sign off definitions; stewards run controls; security/privacy partners review obligations.</p></div>
+        <div class="card"><h3>Risks &amp; responses</h3><p>Unclear ownership → signed RACI. Adoption fatigue → small pilot and training. Poor source quality → issue backlog. Scope/cost growth → stage gates and consumption alerts.</p></div>
+        <div class="card"><h3>Evidence of success</h3><p>Track % critical elements with owners and definitions; % passing quality rules; median issue resolution time; % priority sources cataloged; policy exceptions and annual re-score.</p></div>
+      </div>
+      <p class="note">Set baselines and numeric thresholds with business owners during the pilot; do not confuse tool adoption counts with mature governance outcomes.</p>
+    </section>
+
+    <section class="slide" id="slide-12" aria-labelledby="title-12">
+      <p class="eyebrow">Decision &amp; next steps · 12</p>
+      <h2 id="title-12" tabindex="-1">Start with one domain. Prove the model.</h2>
+      <div class="two-col">
+        <ol class="lead">
+          <li>Retrieve the original assessment image and reconcile all 13 current/target scores.</li>
+          <li>Appoint sponsor, council, domain owner and stewards; approve charter and pilot scope.</li>
+          <li>Inventory priority data and agree glossary, quality rules and baseline metrics.</li>
+          <li>Run a time-boxed pilot, reassess outcomes, then select tools and fund the next gate.</li>
+        </ol>
+        <div class="stat"><strong>First gate</strong><span>Approve discovery and a named accountable pilot domain. Budget only after requirements, licensing and consumption are validated.</span></div>
+      </div>
+      <p class="note">Source: repository <a href="DATA_GOVERNANCE_IMPROVEMENT_PLAN.md">Data Governance Improvement Plan</a> and assessment description in task context. See <a href="README.md">README</a> for source limitations and presentation controls.</p>
+    </section>
+  </main>
+  <nav class="controls" aria-label="Slide navigation">
+    <button id="previous" type="button" aria-label="Previous slide">← Previous</button>
+    <p id="slide-status" role="status" aria-live="polite">Slide 1 of 12</p>
+    <button id="next" type="button" aria-label="Next slide">Next →</button>
+  </nav>
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll(".slide")];
+      const previous = document.getElementById("previous");
+      const next = document.getElementById("next");
+      const status = document.getElementById("slide-status");
+      const indexFromHash = () => {
+        const match = /^#slide-(\d+)$/.exec(location.hash);
+        return match && Number(match[1]) >= 1 && Number(match[1]) <= slides.length
+          ? Number(match[1]) - 1 : 0;
+      };
+      let index = indexFromHash();
+      function show(target, focus = false) {
+        index = Math.max(0, Math.min(slides.length - 1, target));
+        slides.forEach((slide, position) => { slide.hidden = position !== index; });
+        previous.disabled = index === 0;
+        next.disabled = index === slides.length - 1;
+        status.textContent = `Slide ${index + 1} of ${slides.length}`;
+        if (location.hash !== `#slide-${index + 1}`) history.replaceState(null, "", `#slide-${index + 1}`);
+        window.scrollTo(0, 0);
+        if (focus) slides[index].querySelector("h1, h2").focus();
+      }
+      previous.addEventListener("click", () => show(index - 1, true));
+      next.addEventListener("click", () => show(index + 1, true));
+      window.addEventListener("hashchange", () => show(indexFromHash(), true));
+      document.addEventListener("keydown", (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName)) return;
+        let target;
+        if (event.key === "ArrowRight" || event.key === "PageDown") target = index + 1;
+        if (event.key === "ArrowLeft" || event.key === "PageUp") target = index - 1;
+        if (event.key === "Home") target = 0;
+        if (event.key === "End") target = slides.length - 1;
+        if (target !== undefined) { event.preventDefault(); show(target, true); }
+      });
+      show(index);
+    })();
+  </script>
+</body>
+</html>
